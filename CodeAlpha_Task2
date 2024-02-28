@@ -1,35 +1,42 @@
-from shutil import move
-from os import path
-import os
-directory = {
-    'Programming Files': set(['ipynb', 'py', 'java', 'cs', 'js', 'vsix', 'jar', 'cc', 'ccc', 'html', 'xml', 'kt']),
-    'Music':  set(['mp3', 'wav', 'wma', 'mpa', 'ram', 'ra', 'aac', 'aif', 'm4a', 'tsa']),
-    'Videos':  set(['mp4', 'webm', 'mkv', 'MPG', 'MP2', 'MPEG', 'MPE', 'MPV', 'OGG', 'M4P', 'M4V', 'WMV', 'MOV', 'QT', 'FLV', 'SWF', 'AVCHD', 'avi', 'mpg', 'mpe', 'mpeg', 'asf', 'wmv', 'mov', 'qt', 'rm']),
-    'Pictures':  set(['jpeg', 'jpg', 'png', 'gif', 'tiff', 'raw', 'webp', 'jfif', 'ico', 'psd', 'svg', 'ai']),
-    'Applications': set(['exe', 'msi', 'deb', 'rpm']),
-    'Compressed': set(['zip', 'rar', 'arj', 'gz', 'sit', 'sitx', 'sea', 'ace', 'bz2', '7z']),
-    'Documents': set(['txt', 'pdf', 'doc', 'xlsx', 'pdf', 'ppt', 'pps', 'docx', 'pptx']),
-    'Other': set([])
-}
-def create_folders():
-    for dir_ in directory:
-        try:
-            os.mkdir(dir_)
-            print(f'{dir_:20} Created')
-        except OSError:
-            print(f'{dir_:20} Already Exists')
-def get_folder(ext):
-    for f, ex in directory.items():
-        if ext in ex:
-            return f
-    return 'Other'
-def start():
-    for filename in os.listdir():
-        if filename != __file__ and filename[0] != '.' and '.' in filename:
-            ext = os.path.basename(filename).split('.')[-1]
-            folder = get_folder(ext)
-            if not os.path.isfile(os.path.join(folder, filename)):
-                move(filename, folder)
-if __name__ == '__main__':
-    create_folders()
-    start()
+import requests
+API_KEY = "C78QELZJBEPG0G22"
+BASE_URL = "https://www.alphavantage.co/query"
+portfolio = {}
+def add_stock(symbol):
+    response = requests.get(f"{BASE_URL}?function=GLOBAL_QUOTE&symbol={symbol}&apikey={API_KEY}")
+    data = response.json()
+    if 'Global Quote' in data:
+        price = float(data['Global Quote']['05. price'])
+        portfolio[symbol] = price
+        print(f"{symbol} added to portfolio at ${price}")
+    else:
+        print("Invalid symbol")
+def remove_stock(symbol):
+    if symbol in portfolio:
+        del portfolio[symbol]
+        print(f"{symbol} removed from portfolio")
+    else:
+        print("Symbol not found in portfolio")
+def display_portfolio():
+    print("\nCurrent Portfolio:")
+    for symbol, price in portfolio.items():
+        print(f"{symbol}: ${price}")
+def main():
+    while True:
+        print("\n1. Add Stock\n2. Remove Stock\n3. Display Portfolio\n4. Exit")
+        choice = input("Enter your choice: ")
+        if choice == '1':
+            symbol = input("Enter stock symbol: ").upper()
+            add_stock(symbol)
+        elif choice == '2':
+            symbol = input("Enter stock symbol to remove: ").upper()
+            remove_stock(symbol)
+        elif choice == '3':
+            display_portfolio()
+        elif choice == '4':
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+if __name__ == "__main__":
+    main()
