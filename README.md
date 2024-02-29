@@ -11,12 +11,6 @@ Create a stock portfolio tracking tool that allows users
 to add, remove, and track the performance of their
 stock investments. Utilize financial APIs for real-time
 stock data.
-## Task 3
-#### Basic Chatbot
-Create a text-based chatbot that can have
-conversations with users. You can use natural
-language processing libraries like NLTK or spaCy to
-make your chatbot more conversational.
 ## Task 4
 #### Task Automation with Python Scripts
 Identify a repetitive task in your workflow and create
